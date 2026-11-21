@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register - FundiLink</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="alternate icon" href="favicon.png">
+</head>
+<body>
+<header>
+  <div class="brand-row">
+    <a href="index.html" class="logo"><svg class="logo-mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path class="mk-ink-stroke" d="M17 56 V24 Q17 12 29 12 H34" fill="none" stroke-width="9"/><rect class="mk-ink" x="40" y="8" width="9" height="48"/><rect class="mk-green" x="6" y="29" width="43" height="8"/></svg><span class="logo-word">FundiLink</span></a>
+    <nav aria-label="Main navigation">
+      <ul>
+        <li><a href="index.html" data-page="index.html">Home</a></li>
+        <li><a href="about.html" data-page="about.html">About</a></li>
+        <li><a href="contact.html" data-page="contact.html">Contact</a></li>
+        <li><a href="register.html" data-page="register.html">Become a fundi</a></li>
+        <li id="account-nav-slot"><a href="login.html" data-page="login.html">Login</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main style="max-width:460px;">
+  <!-- Registration form: field formats (required, minlength, phone
+       pattern) are all validated by the browser via HTML5 attributes.
+       The one exception is confirm-password, which cannot be checked
+       with attributes alone - it uses the HTML5 setCustomValidity()
+       API so the browser still shows and blocks on it natively. -->
+  <form class="card" id="register-form">
+    <h2>Create an account</h2>
+    <p class="muted" style="margin-bottom:0.6rem;">Register as a client or as a fundi</p>
+    <div class="role-toggle">
+      <button type="button" class="role-btn active" data-role="client">I'm a client</button>
+      <button type="button" class="role-btn" data-role="fundi">I'm a fundi</button>
+    </div>
+    <input type="hidden" id="reg-role" value="client">
+
+    <div class="form-field">
+      <label for="reg-name">Full name</label>
+      <input type="text" id="reg-name" minlength="2" required>
+    </div>
+
+    <div class="form-field">
+      <label for="reg-username">Choose a username</label>
+      <input type="text" id="reg-username" minlength="3" pattern="[A-Za-z0-9_]+" title="Letters, numbers, and underscores only" required>
+    </div>
+
+    <div class="form-field">
+      <label for="reg-phone">Phone number</label>
+      <input type="tel" id="reg-phone" placeholder="0788123456" pattern="(\+?250|0)?7[0-9]{8}" title="Enter a Rwandan number, e.g. 0788123456" required>
+    </div>
+
+    <div class="form-field">
+      <label for="reg-password">Password</label>
+      <input type="password" id="reg-password" minlength="6" required>
+    </div>
+
+    <div class="form-field">
+      <label for="reg-confirm">Confirm password</label>
+      <input type="password" id="reg-confirm" minlength="6" required>
+    </div>
+
+    <div id="fundi-fields" class="hidden">
+      <div class="form-field">
+        <label for="reg-trade">Your trade</label>
+        <select id="reg-trade">
+          <option value="Electrician">Electrician</option>
+          <option value="Plumber">Plumber</option>
+          <option value="Carpenter">Carpenter</option>
+          <option value="Tailor">Tailor</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="reg-location">Location</label>
+        <input type="text" id="reg-location" placeholder="e.g. Kimironko, Kigali">
+      </div>
+    </div>
+
+    <button type="submit">Create account</button>
+    <div class="status-msg hidden" id="register-status"></div>
+    <p class="muted" style="margin-top:1rem;">Already have an account? <a href="login.html">Login here</a>.</p>
+  </form>
+</main>
+
+<footer>
+  <div class="footer-row">
+    <a href="index.html" class="logo"><svg class="logo-mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path class="mk-ink-stroke" d="M17 56 V24 Q17 12 29 12 H34" fill="none" stroke-width="9"/><rect class="mk-ink" x="40" y="8" width="9" height="48"/><rect class="mk-green" x="6" y="29" width="43" height="8"/></svg><span class="logo-word">FundiLink</span></a>
+    <p><a href="server-time.php">Server time</a> &nbsp;&middot;&nbsp; &copy; 2026 FundiLink. Kigali, Rwanda.</p>
+  </div>
+</footer>
+
+<script src="js/seed-data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const roleField = document.getElementById('reg-role');
+  const fundiFields = document.getElementById('fundi-fields');
+  const passwordInputEl = document.getElementById('reg-password');
+  const confirmInputEl = document.getElementById('reg-confirm');
+
+  document.querySelectorAll('.role-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.role-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      roleField.value = btn.dataset.role;
+      fundiFields.classList.toggle('hidden', btn.dataset.role !== 'fundi');
+    });
+  });
+
+  // Plugs the password-match check into the browser's own HTML5
+  // validation flow via setCustomValidity, instead of a separate
+  // JS-rendered error message.
+  function checkPasswordsMatch() {
+    confirmInputEl.setCustomValidity(
+      confirmInputEl.value !== passwordInputEl.value ? 'Passwords do not match.' : ''
+    );
+  }
+  passwordInputEl.addEventListener('input', checkPasswordsMatch);
+  confirmInputEl.addEventListener('input', checkPasswordsMatch);
+
+  document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    // HTML5 validation (including the custom password-match check
+    // above) has already passed by the time this runs.
+    const nameInput = document.getElementById('reg-name');
+    const usernameInput = document.getElementById('reg-username');
+    const phoneInput = document.getElementById('reg-phone');
+    const passwordInput = passwordInputEl;
+    const status = document.getElementById('register-status');
+    const role = roleField.value;
+
+    const newUser = {
+      username: usernameInput.value.trim(),
+      password: passwordInput.value,
+      role,
+      name: nameInput.value.trim(),
+      phone: phoneInput.value.trim(),
+    };
+    if (role === 'fundi') {
+      newUser.trade = document.getElementById('reg-trade').value;
+      newUser.location = document.getElementById('reg-location').value.trim();
+    }
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    const result = await handleRegister(newUser);
+    submitBtn.disabled = false;
+    if (!result.ok) {
+      status.textContent = result.message;
+      status.className = 'status-msg error';
+      return;
+    }
+    status.textContent = `Account created. Welcome, ${newUser.name}. Redirecting...`;
+    status.className = 'status-msg success';
+    setTimeout(() => {
+      window.location.href = role === 'client' ? 'dashboard-client.html' : 'dashboard-fundi.html';
+    }, 700);
+  });
+</script>
+</body>
+</html>

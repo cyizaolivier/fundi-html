@@ -1,0 +1,29 @@
+[
+  {
+    "id": "b001",
+    "clientUsername": "client1",
+    "fundiUsername": "jpelectric",
+    "category": "Electrician",
+    "date": "2026-09-25",
+    "description": "Fix a tripping circuit breaker in the kitchen.",
+    "status": "pending"
+  },
+  {
+    "id": "b002",
+    "clientUsername": "client1",
+    "fundiUsername": "aliceplumb",
+    "category": "Plumber",
+    "date": "2026-09-28",
+    "description": "Bathroom sink is leaking under the counter.",
+    "status": "accepted"
+  },
+  {
+    "id": "b003",
+    "clientUsername": "client2",
+    "fundiUsername": "jpelectric",
+    "category": "Electrician",
+    "date": "2026-09-30",
+    "description": "Install two new ceiling lights in the living room.",
+    "status": "pending"
+  }
+]

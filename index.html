@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FundiLink - Find a trusted fundi</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="alternate icon" href="favicon.png">
+</head>
+<body>
+<header>
+  <div class="brand-row">
+    <a href="index.html" class="logo"><svg class="logo-mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path class="mk-ink-stroke" d="M17 56 V24 Q17 12 29 12 H34" fill="none" stroke-width="9"/><rect class="mk-ink" x="40" y="8" width="9" height="48"/><rect class="mk-green" x="6" y="29" width="43" height="8"/></svg><span class="logo-word">FundiLink</span></a>
+    <nav aria-label="Main navigation">
+      <ul>
+        <li><a href="index.html" data-page="index.html">Home</a></li>
+        <li><a href="about.html" data-page="about.html">About</a></li>
+        <li><a href="contact.html" data-page="contact.html">Contact</a></li>
+        <li><a href="register.html" data-page="register.html">Become a fundi</a></li>
+        <li id="account-nav-slot"><a href="login.html" data-page="login.html">Login</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <div>
+      <h1>Find a trusted <span>fundi</span> near you.</h1>
+      <p class="lede">Book electricians, plumbers, carpenters and tailors across Kigali. Pick a fundi, choose a date, done.</p>
+      <form class="search-row" id="search-form">
+        <label for="search-input" class="hidden">Search by trade or area</label>
+        <input type="search" id="search-input" placeholder="Try &quot;plumber&quot; or &quot;Kimironko&quot;">
+        <button type="submit">Search</button>
+      </form>
+    </div>
+    <div class="preview" aria-hidden="true">
+      <div class="preview-head">Booking request sent</div>
+      <div class="preview-row">
+        <div><p class="preview-trade">Plumber</p><p class="preview-meta">Alice Uwase &middot; Kimironko</p></div>
+        <span class="status-pill accepted">accepted</span>
+      </div>
+      <div class="preview-row">
+        <div><p class="preview-trade">Electrician</p><p class="preview-meta">Jean Paul Habimana &middot; Kacyiru</p></div>
+        <span class="status-pill pending">pending</span>
+      </div>
+      <div class="preview-row">
+        <div><p class="preview-trade">Tailor</p><p class="preview-meta">Eric Nshimiyimana &middot; Nyamirambo</p></div>
+        <span class="status-pill pending">pending</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="band alt" id="fundis">
+  <div class="wrap">
+    <div class="band-head">
+      <h2>Fundis available now</h2>
+      <p>Verified tradespeople across Kigali, with clear rates up front.</p>
+    </div>
+    <div class="fundi-grid" id="category-grid" aria-live="polite">
+      <p class="muted" style="padding:1.5rem;">Loading fundis...</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="band-head"><h2>How it works</h2></div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><h3>Search a trade</h3><p>Filter by trade or neighbourhood and compare rates and ratings.</p></div>
+      <div class="step"><div class="step-num">2</div><h3>Send a request</h3><p>Pick a date and describe the job. The fundi gets your request straight away.</p></div>
+      <div class="step"><div class="step-num">3</div><h3>Get it fixed</h3><p>Track the status from your dashboard as the fundi accepts your booking.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band dark">
+  <div class="wrap cta">
+    <div>
+      <h2>Are you a fundi?</h2>
+      <p>Create a free profile, set your rate, and accept the jobs that suit you.</p>
+    </div>
+    <div class="btn-row">
+      <a class="btn" href="register.html">Join as a fundi</a>
+      <a class="btn on-dark-ghost" href="login.html">Login</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-row">
+    <a href="index.html" class="logo"><svg class="logo-mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path class="mk-ink-stroke" d="M17 56 V24 Q17 12 29 12 H34" fill="none" stroke-width="9"/><rect class="mk-ink" x="40" y="8" width="9" height="48"/><rect class="mk-green" x="6" y="29" width="43" height="8"/></svg><span class="logo-word">FundiLink</span></a>
+    <p><a href="server-time.php">Server time</a> &nbsp;&middot;&nbsp; &copy; 2026 FundiLink. Kigali, Rwanda.</p>
+  </div>
+</footer>
+
+<script src="js/seed-data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/main.js"></script>
+<script>
+  let allFundis = [];
+
+  async function renderFundis(filterText = '') {
+    if (allFundis.length === 0) allFundis = await getFundis();
+    const term = filterText.trim().toLowerCase();
+    const list = term
+      ? allFundis.filter((f) => (f.trade + ' ' + f.location + ' ' + f.name).toLowerCase().includes(term))
+      : allFundis;
+    const grid = document.getElementById('category-grid');
+    if (list.length === 0) {
+      grid.innerHTML = '<p class="empty">No fundis match that search. Try another trade or area.</p>';
+      return;
+    }
+    const s = getSession();
+    const bookHref = s && s.role === 'client' ? 'dashboard-client.html' : 'login.html';
+    grid.innerHTML = list.map((f) => `
+      <article class="fundi-item">
+        <h3>${esc(f.trade)}</h3>
+        <p class="who">${esc(f.name)}${f.location ? ' &middot; ' + esc(f.location) : ''}</p>
+        <p class="bio">${esc(f.bio) || 'New on FundiLink.'}${f.availability ? ' <span class="avail">' + esc(f.availability) + '</span>' : ''}</p>
+        <div class="fundi-foot">
+          <span class="price">${priceLabel(f)}</span>
+          <a class="book-link" href="${bookHref}">Book ${esc(f.name.split(' ')[0])} &rarr;</a>
+        </div>
+      </article>`).join('');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => renderFundis());
+  document.getElementById('search-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    renderFundis(document.getElementById('search-input').value);
+    document.getElementById('fundis').scrollIntoView({ behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>

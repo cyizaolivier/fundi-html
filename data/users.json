@@ -1,0 +1,8 @@
+[
+  { "username": "client1", "password": "client123", "role": "client", "name": "Olivier C." },
+  { "username": "client2", "password": "client123", "role": "client", "name": "Sandrine K." },
+  { "username": "jpelectric", "password": "fundi123", "role": "fundi", "name": "Jean Paul Habimana" },
+  { "username": "aliceplumb", "password": "fundi123", "role": "fundi", "name": "Alice Uwase" },
+  { "username": "erictailor", "password": "fundi123", "role": "fundi", "name": "Eric Nshimiyimana" },
+  { "username": "dianewood", "password": "fundi123", "role": "fundi", "name": "Diane Mukamana" }
+]
